@@ -1,0 +1,50 @@
+name: "Engineering Task"
+description: Routine engineering work — explicitly NOT SR&ED research.
+title: ""
+labels: ["engineering"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for work that is routine engineering — no technological uncertainty, no novel investigation.
+        If you're unsure whether something qualifies as SR&ED, file it here and flag it for review; err on the side of "not SR&ED" for labelling purposes.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - "Frontend — SPA"
+        - "Frontend — Admin UI"
+        - "Backend — API"
+        - "Backend — Eventbus / WebSocket"
+        - "Backend — Input validation / Auth"
+        - "Data layer"
+        - "AI connector (non-research)"
+        - "DevOps / Infra"
+        - "Observability"
+        - "Docs"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+
+  - type: checkboxes
+    id: sred-check
+    attributes:
+      label: SR&ED Screening
+      description: Confirm this is NOT SR&ED work.
+      options:
+        - label: "I have considered whether this involves technological uncertainty and concluded it does not."
+          required: true

@@ -1,0 +1,46 @@
+name: "Experiment Log Entry"
+description: One iteration/run under a parent SR&ED research issue.
+title: "[EXP] "
+labels: ["sred", "experiment"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A single experimental run. Use for iterations that belong to a parent SR&ED Research Issue.
+        Keep these cheap to file — the goal is contemporaneous evidence, not polished narrative.
+
+  - type: input
+    id: parent
+    attributes:
+      label: Parent Research Issue
+      description: "e.g., #42"
+    validations:
+      required: true
+
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup
+      description: Parameters, inputs, dataset version, model version, random seed, commit SHA of the code run.
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: Result
+      description: Numbers, observations, links to logs or dashboards.
+    validations:
+      required: true
+
+  - type: textarea
+    id: next
+    attributes:
+      label: Next Step
+      description: What this run suggests you try next (or stop trying).
+
+  - type: input
+    id: time-spent
+    attributes:
+      label: Time Spent (hours)
+      description: Actual hours on this run, for SR&ED time attribution.

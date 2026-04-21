@@ -1,0 +1,101 @@
+name: "SR&ED Research Issue"
+description: Capture a technological uncertainty investigation with a CRA/OITC-ready audit trail.
+title: "[SR&ED] "
+labels: ["sred", "research"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this issue to document a technological uncertainty investigation from hypothesis to outcome.
+        Every field contributes to the SR&ED claim narrative — fill in what you know now, update as the work evolves.
+        Link commits, PRs, eval scripts, data files, and dashboards liberally. Failed experiments still count — document them.
+
+  - type: dropdown
+    id: uncertainty
+    attributes:
+      label: Work Package / Technological Uncertainty
+      description: Which of the six RSE work packages does this investigation belong to?
+      options:
+        - "WP1 — Semantic Chunking Strategy for Professional Documents"
+        - "WP2 — Relevance Gate Threshold Calibration"
+        - "WP3 — Ambiguity Detection Heuristics"
+        - "WP4 — Conversational Augmentation Pipeline"
+        - "WP5 — Dual-Score Job Description Correlation Engine"
+        - "WP6 — Multi-Tenant Quota Enforcement with Cost Attribution"
+        - "Cross-cutting / Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: What do you believe to be true? State it so it can be falsified.
+      placeholder: "e.g., A sentence-boundary chunker seeded with domain-section headers will outperform fixed-token chunking for résumé retrieval precision at k=5."
+    validations:
+      required: true
+
+  - type: textarea
+    id: prior-art
+    attributes:
+      label: Prior Art Reviewed
+      description: Libraries, papers, blog posts, products considered. Why each is inadequate for this specific problem.
+      placeholder: "LangChain RecursiveCharacterTextSplitter — token-uniform; loses section coherence for multi-domain résumés. llama_index SemanticSplitterNodeParser — close, but doesn't preserve explicit section headers. Paper X (arXiv link) — evaluates on news corpora, not professional docs."
+    validations:
+      required: true
+
+  - type: textarea
+    id: uncertainty-statement
+    attributes:
+      label: Technological Uncertainty Statement
+      description: What cannot be resolved by standard practice or routine engineering? Phrase as a question a skilled practitioner could not answer without investigation.
+      placeholder: "Can a chunking strategy for multi-domain professional documents produce retrieval precision >= X without sacrificing recall below Y, and what strategy achieves it?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: experiment
+    attributes:
+      label: Experimental Plan
+      description: What will you try, in what order? How will you measure success? What's the holdout / control / baseline?
+      placeholder: "Baseline: fixed 512-token chunking. Variants: sentence-boundary, section-aware, section-aware + overlap. Eval set: 50 résumés + 100 synthetic queries with labelled relevant chunks. Metrics: P@5, R@5, MRR. Success: >= 10% P@5 lift over baseline without >5% recall loss."
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What result would cause you to call this uncertainty resolved (or pivot)?
+      placeholder: "Resolved if any variant hits the success bar on eval set and holds on holdout. Pivot if no variant clears the bar after N iterations — escalate to LLM-guided chunking."
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence & Artifacts (update as you go)
+      description: Commit SHAs, eval scripts, data files, dashboards, screenshots, run logs. Link liberally.
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome & Learning (fill at close)
+      description: What happened. What worked, what didn't. What was learned. Even negative results count — document them.
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      options:
+        - Hypothesis
+        - In Progress
+        - "Resolved — Success"
+        - "Resolved — Partial"
+        - "Resolved — Negative Result"
+        - Pivoted
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: time-estimate
+    attributes:
+      label: Estimated Effort (hours)
+      description: Rough estimate for SR&ED time-allocation planning. Refine as work progresses.
