@@ -59,14 +59,14 @@ fi
 FROM=$(parse_date "$FROM" "--from")
 TO=$(parse_date "${TO:-today}" "--to")
 
-if [[ "$FROM" > "$TO" ]]; then
+if [[ $(date -d "$FROM" +%s) -gt $(date -d "$TO" +%s) ]]; then
   echo "Error: --from ($FROM) must not be after --to ($TO)." >&2
   exit 1
 fi
 
 current="$FROM"
-while [[ "$current" <= "$TO" ]]; do
+while [[ $(date -d "$current" +%s) -le $(date -d "$TO" +%s) ]]; do
   echo "Processing $current..."
-  "$SCRIPT_DIR/github_summary.sh" "$current" && echo "  done" || echo "  skipped (no commits)"
+  "$SCRIPT_DIR/daily_git_summary.sh" "$current" && echo "  done" || echo "  skipped (no commits)"
   current=$(date -d "$current + 1 day" +%Y-%m-%d)
 done
