@@ -82,7 +82,7 @@ Six months later at claim prep, those bullets link to issue #42's full comment t
 
 **Layer 1 — Prevention.** The `commit-msg` hook rejects (or auto-prepends to) commits whose subject lacks `#NNN:`, where `NNN` is derived from the branch name. Installed via `scripts/install-hooks.sh`.
 
-**Layer 2 — Mechanical recovery.** If a commit subject still lacks `#NNN:` (e.g., committed in a repo where the hook isn't installed), the parser falls back to the branch name via `git log --source`. If the branch matches `^<digits>-`, the issue is recovered silently — no GitHub write needed.
+**Layer 2 — Mechanical recovery.** If a commit subject still lacks `#NNN:` (e.g., committed in a repo where the hook isn't installed), the parser inspects branches containing the commit via `git branch --all --contains` and looks for a branch name matching `^<digits>-`. When found, the issue is recovered silently — no GitHub write needed.
 
 **Layer 3 — Human-judged reconciliation.** Commits that survive Layers 1 and 2 land in a `## (untracked)` section of the daily log. These are the residual cases requiring judgment.
 
@@ -98,10 +98,11 @@ When `daily_git_summary.sh` emits a `## (untracked)` section, work through each 
 3. **Run the helper** with the chosen issue number:
 
    ```bash
-   scripts/reconcile_commit.sh <sha> <issue> --repo XP-Quest/<repo>
+   cd <repo>
+   ../xpq-org/scripts/reconcile_commit.sh <sha> <issue> --repo XP-Quest/<repo>
    ```
 
-   The helper opens `$EDITOR` for the verbose comment (Rule 4 standard applies — this comment must be as complete as if it had been written at commit time), posts it to the issue, and appends the SHA to `journal/.reconciled` so the daily log skips it on the next run.
+   The helper lives in the org-level `xpq-org` checkout, but it must be executed from inside the target repo so `git rev-parse` resolves the SHA in the correct repository. It opens `$EDITOR` for the verbose comment (Rule 4 standard applies — this comment must be as complete as if it had been written at commit time), posts it to the issue, and appends the SHA to `journal/.reconciled` so the daily log skips it on the next run.
 4. The next daily run will no longer flag the SHA. The reconciled commit appears nowhere in the regular sections — the audit trail lives entirely in the issue thread, by design.
 
 ## Time tracking

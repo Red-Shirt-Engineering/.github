@@ -57,7 +57,8 @@ if ! git rev-parse --verify "${SHA}^{commit}" >/dev/null 2>&1; then
   echo "  Run this script from inside the repo holding the commit." >&2
   exit 1
 fi
-SHORT_SHA=$(git rev-parse --short "$SHA")
+SHA=$(git rev-parse --verify "${SHA}^{commit}")
+SHORT_SHA="$SHA"
 
 if [[ -z "$REPO" ]]; then
   url=$(git config --get remote.origin.url 2>/dev/null || true)
@@ -82,7 +83,7 @@ if [[ ! -f "$RECONCILED_FILE" ]]; then
   exit 1
 fi
 
-if grep -q "^${SHORT_SHA}\b" "$RECONCILED_FILE"; then
+if grep -Eq "^${SHORT_SHA}([[:space:]]|$)" "$RECONCILED_FILE"; then
   echo "Note: $SHORT_SHA is already in .reconciled. No action taken."
   exit 0
 fi

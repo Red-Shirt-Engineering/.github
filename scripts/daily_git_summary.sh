@@ -18,10 +18,12 @@ else
   TARGET_DATE=$(date +%Y-%m-%d)
 fi
 
-OUTPUT_DIR="/mnt/c/Users/rcoe6/OneDrive/Documents/Claude/Projects/XPQuest/Daily Logs"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_SEARCH_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+SEARCH_ROOT="${SEARCH_ROOT:-$DEFAULT_SEARCH_ROOT}"
+OUTPUT_DIR="${OUTPUT_DIR:-${DEFAULT_SEARCH_ROOT}/Daily Logs}"
 OUTPUT_FILE="${OUTPUT_DIR}/github_summary-${TARGET_DATE}.md"
-SEARCH_ROOT="/home/rcoe/xpquest"
-RECONCILED_FILE="${SEARCH_ROOT}/xpq-org/journal/.reconciled"
+RECONCILED_FILE="${RECONCILED_FILE:-${SEARCH_ROOT}/xpq-org/journal/.reconciled}"
 
 AFTER="${TARGET_DATE} 00:00:00"
 BEFORE="${TARGET_DATE} 23:59:59"
@@ -170,7 +172,8 @@ mkdir -p "$OUTPUT_DIR"
     echo "## (untracked)"
     echo ""
     echo "Commits with no \`#NN:\` subject prefix and no \`<issue>-\` branch fallback."
-    echo "Reconcile each via \`xpq-org/scripts/reconcile_commit.sh <sha> <issue>\`."
+    echo "For each commit, first \`cd\` into the repo shown on that line (the repo that contains the SHA)."
+    echo "Then run \`xpq-org/scripts/reconcile_commit.sh <sha> <issue>\` from there."
     echo ""
     for line in "${untracked_lines[@]}"; do
       echo "$line"
