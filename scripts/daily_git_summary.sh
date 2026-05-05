@@ -70,18 +70,39 @@ repo_identifier() {
 }
 
 # Layer 2 fallback: find an <issue>-<slug> branch containing this SHA.
+# Choose deterministically when a commit is reachable from multiple issue
+# branches: prefer origin/<issue>-* branches, then local <issue>-* branches,
+# and break ties lexicographically by branch name.
 issue_from_branches() {
   local dir="$1" sha="$2"
   local branches
+  local b normalized issue rank
+  local best_issue="" best_branch="" best_rank=99
+
   branches=$(git -C "$dir" branch --all --contains "$sha" --format='%(refname:short)' 2>/dev/null || true)
   while IFS= read -r b; do
-    b="${b#origin/}"
-    if [[ "$b" =~ ^([0-9]+)- ]]; then
-      echo "${BASH_REMATCH[1]}"
-      return
+    [[ -z "$b" ]] && continue
+
+    rank=99
+    normalized="$b"
+    if [[ "$b" == origin/* ]]; then
+      rank=0
+      normalized="${b#origin/}"
+    elif [[ "$b" != remotes/* ]]; then
+      rank=1
+    fi
+
+    if [[ "$normalized" =~ ^([0-9]+)- ]]; then
+      issue="${BASH_REMATCH[1]}"
+      if (( rank < best_rank )) || [[ $rank -eq $best_rank && ( -z "$best_branch" || "$normalized" < "$best_branch" ) ]]; then
+        best_rank=$rank
+        best_branch="$normalized"
+        best_issue="$issue"
+      fi
     fi
   done <<< "$branches"
-  echo ""
+
+  echo "$best_issue"
 }
 
 declare -a sections=()
